@@ -1,7 +1,6 @@
 import math
 import random
-
-def intToDotted(ip :int):
+def intToDotted(ip):
     # input: ip
 
     # determins dotted decimal format for given ip as int
@@ -15,7 +14,7 @@ def intToDotted(ip :int):
     return octets
 
 
-def printDotted(octets: list):
+def printDotted(octets):
     # input: list containing octets
 
     # prints out the dotted decimal format
@@ -24,8 +23,7 @@ def printDotted(octets: list):
     dottedIP = [str(octets[0]), str(octets[1]), str(octets[2]), str(octets[3])]
     x = ".".join(dottedIP)
 
-    print(x)
-    
+    return x    
 
 def generateNetwork():
     # input: none
@@ -35,36 +33,36 @@ def generateNetwork():
     # returns dict: {ip:int, prefix:int}
     ip = random.randint(0, 2**32-1)
     prefix = random.randint(8, 30)
-    ipandprefix = {ip:int, prefix:int}
+    ipandprefix = {"ip":ip, "prefix":prefix}
     return ipandprefix
 
-def GetNetID(ip:int, prefix:int):
-    snm=(2**prefix-1)<<(32-prefix)
-    ip=ip&snm
-    printDotted(intToDotted(ip))
     
+def getnetid(ip, prefix):
+    snm=(2**prefix-1)<<(32-prefix)
+    netid = ip&snm
+    return netid
 
-def BroadcastID(ip:int, prefix:int):
-    wmask = 0xffffffff >> prefix
-    ip=ip|wmask
-    printDotted(intToDotted(ip))
-
-
-def analyseSubnet(ip:int, prefix:int):
+def analyseSubnet(ip, prefix):
     # input: ip as int, prefix as int
     
 
-    # prints out net id, broadcast address,
+    # prints out net id, broadcast address, 
     
     # and amount of addresses and amount of
-    # usable adresses for a given subnet
-    GetNetID(ip, prefix)
-    BroadcastID(ip, prefix)
+    # usable adresses for a given subnet 
 
-
+    
+    wmask = 0xffffffff >> prefix
+    bid = ip|wmask
+    
+    hostbits = 32 - prefix
+    hosts = 2**hostbits-2
+    print("Useable Hosts: {}".format(hosts))
+    ids = {"bid":bid}
+    return ids
     # returns dict: {netid:int, bc:int}
 
-def newSubnetExercises(ip:int, prefix:int):
+def newSubnetExercises(ip, prefix):
     # input: a subnet, consisting of an ip
     # and a given prefix
 
@@ -83,20 +81,56 @@ def newSubnetExercises(ip:int, prefix:int):
 
     # returns dict: {ip: int, prefix:int, newprefix:int}
     # newprefx contains the new subnet mask that solves the exercise
-    print("no")
+    print("Generating new Subnet exercise...")
+    aufgabentyp = random.randint(0,1)
+    bonusaufgabe = random.randint(0,10)
+    newprefix = random.randint(prefix, 31)
 
-def listSubnets(ip: int, prefix:int, newprefix:int):
-    # input: a network range and a subnet prefix to split into
 
-    # note: sanity check with: assert newprefix > prefix
-    # this function prints out every possible network
-    # within the given range, showing net id and bc
-    # as well as amount of adresses and usable hosts per network
+    
+    print(printDotted(intToDotted(ip)))
+    print("Prefix: ", prefix)
+    if aufgabentyp == 0:
+        print("You will have to split the subnet into {} subnets".format(random.randint(2,10)))
+    else:
+        print("Split subnet into subnet with {} Hosts".format(random.randint(8,254)))
+    
+    if bonusaufgabe > 5:
+        print("What is the Net ID of the given subnet?")
+        print("What is the start and end of the Subnet")
+    if bonusaufgabe > 8:
+        print("What is the Adress of the next subnet?")
 
-    # returns: nothing, this just prints all possible subnets
-    print("BLUB")
+    subnetdic = {"ip":ip, "prefix":prefix, "newprefix":newprefix}
+    return subnetdic
+
+def listSubnets(ip, prefix, newprefix):
+    # input: a network range and a subnet prefix to split into DONE
+
+    # note: sanity check with: assert newprefix > prefix DONE
+    # this function prints out every possible network ???
+    # within the given range, showing net id and bc DONE        
+    # as well as amount of adresses and usable hosts per network DONE
+    # returns: nothing, this just prints all possible subnets DONE
+    nid = getnetid(ip, prefix)
+    print(newprefix)
+    hostbits = 32 - newprefix
+    newnetbits = newprefix - prefix
+    newnetbits = 2**newnetbits
+    for i in range(0,newnetbits):
+        print(printDotted(intToDotted(nid +i*2**hostbits)))
+        if i > 25:
+            break
+
+
 if __name__ == '__main__':
-    print("blub")
+    ipdic = generateNetwork()
+    ip = ipdic.get("ip")
+    prefix = ipdic.get("prefix")
+    newprefixdic = newSubnetExercises(ip=ip, prefix=prefix)
+    if input("Press Space and enter to continue") != "":
+        listSubnets(ip, prefix, newprefixdic.get("newprefix"))
+    # 1. Generate new exercise
     # 2. wait for user input, noting that the solution
     # will be shown after after pressing any key
     # 3. print the solution
