@@ -32,7 +32,7 @@ def generateNetwork():
     # to avoid getting too large and too small networks    
     # returns dict: {ip:int, prefix:int}
     ip = random.randint(0, 2**32-1)
-    prefix = random.randint(8, 30)
+    prefix = random.randint(8, 31)
     ipandprefix = {"ip":ip, "prefix":prefix}
     return ipandprefix
 
@@ -84,16 +84,16 @@ def newSubnetExercises(ip, prefix):
     print("Generating new Subnet exercise...")
     aufgabentyp = random.randint(0,1)
     bonusaufgabe = random.randint(0,10)
-    newprefix = random.randint(prefix, 31)
+    newprefix = random.randint(prefix, 32)
 
 
     
     print(printDotted(intToDotted(ip)))
     print("Prefix: ", prefix)
     if aufgabentyp == 0:
-        print("You will have to split the subnet into {} subnets".format(random.randint(2,10)))
+        print("You will have to split the subnet into {} subnets".format(random.randint(2,32-prefix-2)))
     else:
-        print("Split subnet into subnet with {} Hosts".format(random.randint(8,254)))
+        print("Split subnet into subnet with {} Hosts".format(random.randint(8,2**(32-prefix)/2)))
     
     if bonusaufgabe > 5:
         print("What is the Net ID of the given subnet?")
